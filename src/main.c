@@ -12,7 +12,7 @@
 #include "cwpack/cwpack.h"
 
 static void usage() {
-	fprintf(stderr, "c_pluginserver <port>");
+	fprintf(stderr, "c_pluginserver <port>\n");
 }
 
 static struct {
@@ -33,8 +33,8 @@ int parse_opts(int argc, char * const argv[]) {
 				break;
 
 			case 's':
-				opts.connect_to = strdup(optarg);
-				if (!opts.connect_to)
+				opts.listen_on = strdup(optarg);
+				if (!opts.listen_on)
 					return Tv(-1);
 				break;
 
@@ -164,10 +164,10 @@ dill_coroutine void listen_port(int b, const char *sk_path) {
 
 
 int main(int argc, char *argv[]) {
-	if (argc != 2) {
-		usage();
-		return 1;
-	}
+// 	if (argc != 2) {
+// 		usage();
+// 		return 1;
+// 	}
 
 	if (parse_opts(argc, argv) != 0) {
 		return 1;

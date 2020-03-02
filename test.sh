@@ -19,8 +19,8 @@ if pgrep c-pluginserver -l; then
 else
 	echo "starting server..."
 	[ -S "$SOCKET" ] && rm "$SOCKET"
-	./c-pluginserver -s ./$SOCKET &
-	pgrep c-pluginserver -l
+	build/c_pluginserver -s ./$SOCKET &
+	pgrep c_pluginserver -l
 	sleep 0.1s
 fi
 
