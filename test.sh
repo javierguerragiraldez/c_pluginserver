@@ -14,7 +14,7 @@ echo "pwd: $PWD"
 
 SOCKET='c_pluginserver.sock'
 
-if pgrep c-pluginserver -l; then
+if pgrep c_pluginserver -l; then
 	PREVIOUS_SERVER="yes"
 else
 	echo "starting server..."
@@ -23,6 +23,13 @@ else
 	pgrep c_pluginserver -l
 	sleep 0.1s
 fi
+
+killit() {
+	if [ ! -v PREVIOUS_SERVER ]; then
+		pkill c_pluginserver
+		rm "$SOCKET"
+	fi
+}
 
 msg() {
 	query="$1"
@@ -42,6 +49,8 @@ assert_noerr() {
 		echo "query: $query"
 		echo "response: $response"
 		echo "$METHOD : $ERROR" > /dev/stderr
+
+		killit
 		exit 1
 	fi
 	echo "$METHOD: ok"
@@ -56,6 +65,8 @@ assert_fld_match() {
 		echo "==> $fld_v : ok"
 	else
 		echo "==> $fld_v : no match '$pattern'"
+
+		killit
 		exit 1
 	fi
 }
@@ -67,8 +78,4 @@ query_result() {
 msg '[0, 19, "plugin.GetPluginInfo", ["c-hello"]]'
 assert_noerr
 
-if [ ! -v PREVIOUS_SERVER ]; then
-	pkill c-pluginserver
-	rm "$SOCKET"
-fi
-
+killit
