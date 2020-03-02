@@ -169,6 +169,8 @@ error:
 }
 
 cw_unpack_context *mp_unpack_ctx(int s) {
-	(void)s;
-	return NULL;
+	mp_sock *self = dill_hquery(s, &mp_unpack_ctx_type);
+	if (!self) return Tv(NULL);
+
+	return &self->unpack_ctx;
 }
