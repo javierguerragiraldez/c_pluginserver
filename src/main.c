@@ -16,22 +16,26 @@ static void usage() {
 }
 
 static struct {
-	int server_port;
-	int listen_port;
+	const char *connect_to;
+	const char *listen_on;
 } opts;
 
 int parse_opts(int argc, char * const argv[]) {
-	opts = (typeof(opts)){-1, -1};
+	opts = (typeof(opts)){NULL, NULL};
 	int o;
 
 	while ((o = getopt(argc, argv, "c:s:")) != -1) {
 		switch (o) {
 			case 'c':
-				opts.server_port = atoi(optarg);
+				opts.connect_to = strdup(optarg);
+				if (!opts.connect_to)
+					return Tv(-1);
 				break;
 
 			case 's':
-				opts.listen_port = atoi(optarg);
+				opts.connect_to = strdup(optarg);
+				if (!opts.connect_to)
+					return Tv(-1);
 				break;
 
 			default:
@@ -44,12 +48,8 @@ int parse_opts(int argc, char * const argv[]) {
 }
 
 
-dill_coroutine void client_connect(int port) {
-	struct dill_ipaddr addr;
-	int rc = dill_ipaddr_local(&addr, NULL, port, 0);
-	if (rc < 0) return Tv(none);
-
-	int s = dill_tcp_connect(&addr, dill_now() + 1000);
+dill_coroutine void client_connect(const char *sk_path) {
+	int s = dill_ipc_connect(sk_path, 10);
 	if (s < 0) return Tv(none);
 
 // 	do_client(s);
@@ -140,12 +140,8 @@ dill_coroutine void instream_mdump(int s) {
 	}
 }
 
-dill_coroutine void listen_port(int b, int port) {
-	struct dill_ipaddr addr;
-	int rc = dill_ipaddr_local(&addr, NULL, port, 0);
-	if (rc < 0) return Tv(none);
-
-	int ls = dill_tcp_listen(&addr, 10);
+dill_coroutine void listen_port(int b, const char *sk_path) {
+	int ls = dill_ipc_listen(sk_path, 10);
 	if (ls < 0) return Tv(none);
 
 	while (true) {
@@ -158,7 +154,7 @@ dill_coroutine void listen_port(int b, int port) {
 			Tcont();
 		}
 
-		rc = dill_bundle_go(b, instream_mdump(mp));
+		int rc = dill_bundle_go(b, instream_mdump(mp));
 		if (rc != 0) {
 			dill_hclose(mp);
 			Tcont();
@@ -179,13 +175,13 @@ int main(int argc, char *argv[]) {
 
 	int b = dill_bundle();
 
-	if (opts.server_port >= 0) {
-		if(dill_bundle_go(b, client_connect(opts.server_port)) < 0)
+	if (opts.connect_to) {
+		if(dill_bundle_go(b, client_connect(opts.connect_to)) < 0)
 			return Tv(2);
 	}
 
-	if (opts.listen_port >= 0) {
-		if (dill_bundle_go(b, listen_port(b, opts.listen_port)) < 0)
+	if (opts.listen_on) {
+		if (dill_bundle_go(b, listen_port(b, opts.listen_on)) < 0)
 			return Tv(3);
 	}
 
