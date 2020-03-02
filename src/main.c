@@ -65,6 +65,7 @@ dill_coroutine void session_loop(int s) {
 	while (true) {
 		int rc = dispatch_request(ctx_in, ctx_out);
 		if (rc < 0) break;
+		mp_flush(s);
 	}
 
 end:

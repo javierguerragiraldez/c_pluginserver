@@ -185,3 +185,11 @@ cw_pack_context *mp_pack_ctx(int s) {
 
 	return ctx;
 }
+
+void mp_flush(int s) {
+	cw_pack_context *ctx = dill_hquery(s, &mp_pack_ctx_type);
+	if (!ctx) return Tv(none);
+
+	int rc = handle_socket_pack_overflow(ctx, 0);
+	if (rc != CWP_RC_OK) return Tv(none);
+}

@@ -27,3 +27,6 @@ cw_unpack_context *mp_unpack_ctx(int s);
  * usable for cw_* functions
  */
 cw_pack_context *mp_pack_ctx(int s);
+
+
+void mp_flush(int s);
