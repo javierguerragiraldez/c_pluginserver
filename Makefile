@@ -1,4 +1,4 @@
-SOURCES = main.c
+SOURCES = main.c mpack/prot.c cwpack/cwpack.c
 
 CFLAGS = -Wall -Werror -Wextra -MMD -std=gnu11 -I $(SRC_DIR)
 CXXFLAGS = -Wall -Werror -Wextra -MMD -std=c++17 -I $(SRC_DIR)
@@ -9,6 +9,7 @@ LDLIBS = -ldill
 
 BUILD_DIR ?= build
 SRC_DIR ?= src
+SUBDIRS = $(sort $(filter-out ./,$(dir $(SOURCES))))
 
 ifdef DEBUG
   CFLAGS += -g -DDEBUG
@@ -37,11 +38,12 @@ else
   LN = gcc
 endif
 
+
 all: $(APP_BIN)
 
 clean:
 	rm -rf $(BUILD_DIR)
-	mkdir $(BUILD_DIR)
+	mkdir -p $(addprefix $(BUILD_DIR)/,$(SUBDIRS))
 .PHONY: clean
 
 -include $(DEPS)
