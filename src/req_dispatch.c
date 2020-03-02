@@ -5,7 +5,7 @@
 #include "errtrace.h"
 #include "cwpack/cwpack.h"
 #include "req_dispatch.h"
-
+#include "rpc_methods.h"
 
 typedef int rpc_handler(cw_unpack_context *in, cw_pack_context *out);
 typedef struct {
@@ -13,12 +13,6 @@ typedef struct {
 	rpc_handler *handler;
 } handler_reg;
 
-
-int set_plugindir(cw_unpack_context *in, cw_pack_context *out) {
-	(void)in;
-	(void)out;
-	return 0;
-}
 
 
 static handler_reg rpc_methods[] = {

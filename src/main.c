@@ -174,7 +174,7 @@ dill_coroutine void listen_port(int b, const char *sk_path) {
 			Tcont();
 		}
 
-		int rc = dill_bundle_go(b, instream_mdump(mp));
+		int rc = dill_bundle_go(b, session_loop(mp));
 		if (rc != 0) {
 			dill_hclose(mp);
 			Tcont();
