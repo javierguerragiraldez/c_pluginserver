@@ -1,4 +1,4 @@
-#include "plugin.h"
+#include "plugins/plugin.h"
 
 int hello_access(int evt_id);
 

@@ -18,7 +18,6 @@ int get_plugininfo(cw_unpack_context *in, cw_pack_context *out) {
 			in->item.as.str.length, (const char *)in->item.as.str.start);
 
 	cw_pack_nil(out);	// no error
-// 	cw_pack_str(out, "some noise", 10);
 	cw_pack_map_size(out, 0);
 
 	return 0;

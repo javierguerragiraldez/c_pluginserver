@@ -78,4 +78,11 @@ query_result() {
 msg '[0, 19, "plugin.GetPluginInfo", ["c-hello"]]'
 assert_noerr
 
+msg '[0, 19, "plugin.StartInstance", [{"Name":"c-hello", "Config":"{\"message\":\"howdy\"}"}]]'
+assert_noerr
+helloId=$(query_result '."Id"')
+echo "helloId: $helloId"
+
+
+
 killit
