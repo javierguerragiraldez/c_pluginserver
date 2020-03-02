@@ -2,8 +2,8 @@
 
 int hello_access(int evt_id);
 
-plugin_t hello = {
-	"hello",
+plugin_t hello_reg = {
+	"c-hello",
 	NULL,
 	&hello_access,
 	NULL,

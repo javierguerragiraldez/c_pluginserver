@@ -10,3 +10,5 @@ typedef struct {
     int (*body_filter)(int);
     int (*log)(int);
 } plugin_t;
+
+const plugin_t *get_plugin(const char *name);
