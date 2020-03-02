@@ -178,3 +178,10 @@ cw_unpack_context *mp_unpack_ctx(int s) {
 
 	return ctx;
 }
+
+cw_pack_context *mp_pack_ctx(int s) {
+	cw_pack_context *ctx = dill_hquery(s, &mp_pack_ctx_type);
+	if (!ctx) return Tv(NULL);
+
+	return ctx;
+}

@@ -56,6 +56,21 @@ dill_coroutine void client_connect(const char *sk_path) {
 // 	do_client(s);
 }
 
+dill_coroutine void session_loop(int s) {
+	cw_unpack_context *ctx_in = mp_unpack_ctx(s);
+	if (!ctx_in) Tf(end);
+	cw_pack_context *ctx_out = mp_pack_ctx(s);
+	if (!ctx_out) Tf(end);
+
+	while (true) {
+		int rc = dispatch_request(ctx_in, ctx_out);
+		if (rc < 0) break;
+	}
+
+end:
+	dill_hclose(s);
+}
+
 dill_coroutine void instream_mdump(int s) {
 	cw_unpack_context *ctx = mp_unpack_ctx(s);
 // 	fprintf(stderr, "ctx: (%p) [%p, %p, %p]\n", ctx, ctx->current, ctx->start, ctx->end);
