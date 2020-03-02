@@ -158,6 +158,8 @@ int mp_attach(int s, mp_flags flags, int64_t timeout) {
 		if (rc != CWP_RC_OK) Tf(error);
 	}
 
+	return h;
+
 error:
 	free(self->unpack_ctx.start);
 	free(self->pack_ctx.start);

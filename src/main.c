@@ -145,7 +145,7 @@ dill_coroutine void listen_port(int b, const char *sk_path) {
 	if (ls < 0) return Tv(none);
 
 	while (true) {
-		int s = dill_tcp_accept(ls, NULL, -1);
+		int s = dill_ipc_accept(ls, -1);
 		if (s < 0) return Tv(none);
 
 		int mp = mp_attach(s, 0, 1000);
