@@ -57,12 +57,14 @@ dill_coroutine void client_connect(const char *sk_path) {
 
 dill_coroutine void instream_mdump(int s) {
 	cw_unpack_context *ctx = mp_unpack_ctx(s);
+// 	fprintf(stderr, "ctx: (%p) [%p, %p, %p]\n", ctx, ctx->current, ctx->start, ctx->end);
 	if (ctx == NULL) {
 		dill_hclose(s);
 		return Tv(none);
 	}
 
 	while (true) {
+// 		fprintf(stderr, "want to decode something\n");
 		cw_unpack_next(ctx);
 		if (errno != 0) {
 			dill_hclose(s);
@@ -119,6 +121,8 @@ dill_coroutine void instream_mdump(int s) {
 
 			case CWP_NOT_AN_ITEM:
 				printf("not an item\n");
+				errno = ENOMSG;
+				return Tv(none);
 				break;
 
 			default:

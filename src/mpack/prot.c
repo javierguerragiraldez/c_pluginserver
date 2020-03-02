@@ -94,6 +94,7 @@ static int do_read(cw_unpack_context *ctx, int s, unsigned long count, int64_t d
 }
 
 static int handle_socket_unpack_underflow(cw_unpack_context *ctx, unsigned long more) {
+// 	fprintf(stderr, "mp socket underflow (%lu)\n", more);
 	mp_sock *self = cont(ctx, mp_sock, unpack_ctx);
 
 	uint8_t *nxt_end = ctx->current + more;
@@ -125,11 +126,14 @@ static int handle_socket_unpack_underflow(cw_unpack_context *ctx, unsigned long 
 }
 
 int mp_attach(int s, mp_flags flags, int64_t timeout) {
+// 	fprintf(stderr, "attaching to socket %d, flags: %Xd\n", s, flags);
 	mp_sock *self = calloc(1, sizeof(mp_sock));
 	if (!self) {
 		errno = ENOMEM;
 		Tf(error);
 	}
+
+// 	fprintf(stderr, "self: %p\n", self);
 
 	self->hvfs.query = mp_hquery;
 	self->hvfs.close = mp_hclose;
@@ -169,8 +173,8 @@ error:
 }
 
 cw_unpack_context *mp_unpack_ctx(int s) {
-	mp_sock *self = dill_hquery(s, &mp_unpack_ctx_type);
-	if (!self) return Tv(NULL);
+	cw_unpack_context *ctx = dill_hquery(s, &mp_unpack_ctx_type);
+	if (!ctx) return Tv(NULL);
 
-	return &self->unpack_ctx;
+	return ctx;
 }
