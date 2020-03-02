@@ -1,6 +1,7 @@
 SOURCES = main.c req_dispatch.c \
 	rpc_methods/set_plugindir.c \
 	rpc_methods/get_plugininfo.c \
+	rpc_methods/start_instance.c \
 	plugins/hello/hello_plugin.c \
 	mpack/prot.c cwpack/cwpack.c
 

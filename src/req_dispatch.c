@@ -18,6 +18,7 @@ typedef struct {
 static handler_reg rpc_methods[] = {
 	{ "plugin.SetPluginDir", set_plugindir },
 	{ "plugin.GetPluginInfo", get_plugininfo },
+	{ "plugin.StartInstance", start_instance },
 	{ NULL, NULL },
 };
 

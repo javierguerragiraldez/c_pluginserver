@@ -11,4 +11,5 @@ typedef struct {
     int (*log)(int);
 } plugin_t;
 
+void add_plugin(const plugin_t *p);
 const plugin_t *get_plugin(const char *name);
