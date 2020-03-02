@@ -19,6 +19,7 @@ static handler_reg rpc_methods[] = {
 	{ "plugin.SetPluginDir", set_plugindir },
 	{ "plugin.GetPluginInfo", get_plugininfo },
 	{ "plugin.StartInstance", start_instance },
+	{ "plugin.HandleEvent", handle_event },
 	{ NULL, NULL },
 };
 

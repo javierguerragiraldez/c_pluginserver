@@ -83,6 +83,13 @@ assert_noerr
 helloId=$(query_result '."Id"')
 echo "helloId: $helloId"
 
+msg '[0, 19, "plugin.HandleEvent", [{"InstanceId": '$helloId', "EventName": "access", "Params": [45, 23]}]]'
+assert_noerr
+helloEventId=$(query_result '."EventId"')
+
+assert_fld_match 'Data.Method' 'kong.request.set_header'
+assert_fld_match 'Data.Args' '["x-hello", "hello from C"]'
+
 
 
 killit
