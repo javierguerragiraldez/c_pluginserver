@@ -10,6 +10,7 @@
 #include "errtrace.h"
 #include "mpack/prot.h"
 #include "cwpack/cwpack.h"
+#include "req_dispatch.h"
 
 static void usage() {
 	fprintf(stderr, "c_pluginserver <port>\n");

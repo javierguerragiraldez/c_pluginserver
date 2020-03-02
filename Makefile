@@ -1,4 +1,4 @@
-SOURCES = main.c mpack/prot.c cwpack/cwpack.c
+SOURCES = main.c req_dispatch.c mpack/prot.c cwpack/cwpack.c
 
 CFLAGS = -Wall -Werror -Wextra -MMD -std=gnu11 -I $(SRC_DIR)
 CXXFLAGS = -Wall -Werror -Wextra -MMD -std=c++17 -I $(SRC_DIR)
