@@ -28,5 +28,8 @@ cw_unpack_context *mp_unpack_ctx(int s);
  */
 cw_pack_context *mp_pack_ctx(int s);
 
-
+/**
+ * mp_flush makes sure all msgPack objects have been
+ * pushed to the socket
+ */
 void mp_flush(int s);

@@ -4,13 +4,42 @@
 
 #include "errtrace.h"
 #include "cwpack/cwpack.h"
+#include "mpack/tools.h"
+#include "plugins/plugin.h"
 #include "req_dispatch.h"
 
+#define mp_get_string(ctx)	({	\
+	cw_unpack_next(ctx);	\
+	((ctx->item.type == CWP_ITEM_STR) ? ctx->item.as.str.start : Tv(NULL)); \
+})
+
+#define mp_put_const(ctx, v)	_Generic((v), \
+	char: cw_pack_str((ctx), (v), sizeof(v)),	\
+	default: T()	\
+)
+
+#define mp_put_okorerror(ctx, err) ({	\
+	if (err != 0) {	\
+		mp_put_err(out, err);	\
+		cw_pack_nil(out);	\
+	} else {	\
+		cw_pack_nil(out);	\
+		mp_put_const(out, "Ok");	\
+	}	\
+	(err);	\
+})
+
+// TODO: check about strerrorlen_s
+#define mp_put_err(ctx, err)	cw_pack_str(ctx, strerror(err), strlen(strerror(err)))
 
 static int set_plugindir(cw_unpack_context *in, cw_pack_context *out) {
-	(void) in;
-	(void) out;
-	return 0;
+	const char *dir = mp_get_string(in);
+	if (!dir) Tf(end);
+
+	if (plugin_set_dir(dir) < 0) Tf(end);
+
+end:
+	return mp_put_okorerror(out, errno);
 }
 
 

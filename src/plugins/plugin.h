@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stddef.h>
-
 typedef struct {
 	char *name;
     int (*rewrite)(int);
@@ -11,5 +9,5 @@ typedef struct {
     int (*log)(int);
 } plugin_t;
 
-void add_plugin(const plugin_t *p);
-const plugin_t *get_plugin(const char *name);
+int plugin_set_dir(const char *name);
+int plugin_get(const char *name, plugin_t *p);
