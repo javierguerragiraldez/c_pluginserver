@@ -11,3 +11,6 @@ typedef struct {
 
 int plugin_set_dir(const char *name);
 int plugin_get(const char *name, plugin_t *p);
+
+int plugin_start_instance(const char *name, const char *config);
+int plugin_handle_event(int inst_id, const char *evt_name);
