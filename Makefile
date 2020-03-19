@@ -48,6 +48,11 @@ clean:
 	mkdir -p $(addprefix $(BUILD_DIR)/,$(SUBDIRS))
 .PHONY: clean
 
+test_strval: src/strval/strval.c src/strval/strval.h
+	mkdir -p tests
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(TARGET_ARCH) -DTEST -DDEBUG src/strval/strval.c -o tests/strval
+	tests/strval
+
 -include $(DEPS)
 
 $(APP_BIN): $(APP_OBJS)
