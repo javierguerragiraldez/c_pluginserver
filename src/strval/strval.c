@@ -39,14 +39,14 @@ static_assert(str_dict_size(1) == str_dict_size(0) + sizeof(str_val) + sizeof(vo
 static inline uint64_t o1hash(const void *key, size_t len) {
   const uint8_t *p=(const uint8_t*)key;
   if(len>=4) {
-    unsigned first, middle, last;
+    uint32_t first, middle, last;
     memcpy(&first,p,4);
     memcpy(&middle,p+(len>>1)-2,4);
     memcpy(&last,p+len-4,4);
-    return  (uint64_t)(first+last)*middle;
+    return (uint64_t)(first+last)*middle;
   }
   if(len){
-    uint64_t tail=((((unsigned)p[0])<<16) | (((unsigned)p[len>>1])<<8) | p[len-1]);
+    uint64_t tail=((((uint32_t)p[0])<<16) | (((uint32_t)p[len>>1])<<8) | p[len-1]);
     return tail*0xa0761d6478bd642full;
   }
   return  0;
@@ -138,31 +138,60 @@ const void *query_str_dict(const str_dict *d, const char *str, size_t len) {
 
 
 begin_test(strval)
-	str_dict *d = new_dict(0);
-	assert(d);
 
-	const void *p = query_str_dict(d, S("one"));
-	assert(!p);
+	do_test("basic use") {
+		str_dict *d = new_dict(0);
+		assert(d);
 
-	d = add_str(d, S("one"), (void *)4);
-	assert(d);
+		const void *p = query_str_dict(d, S("one"));
+		assert(!p);
 
-	d = pack_dict(d);
-	assert(d);
+		d = add_str(d, S("one"), (void *)4);
+		assert(d);
 
-	p = query_str_dict(d, S("one"));
-	assert((uintptr_t)p == 4);
+		d = pack_dict(d);
+		assert(d);
 
-	d = pack_dict(d);
-	assert(d);
+		p = query_str_dict(d, S("one"));
+		assert((uintptr_t)p == 4);
 
-	d = add_str(d, S("second"), (void *)20);
-	assert(d);
+		d = pack_dict(d);
+		assert(d);
 
-	p = query_str_dict(d, S("second"));
-	assert((uintptr_t)p == 20);
+		d = add_str(d, S("second"), (void *)20);
+		assert(d);
 
-	p = query_str_dict(d, S("one"));
-	assert((uintptr_t)p == 4);
+		p = query_str_dict(d, S("second"));
+		assert((uintptr_t)p == 20);
+
+		p = query_str_dict(d, S("one"));
+		assert((uintptr_t)p == 4);
+	}
+
+	do_test("many elements") {
+		const int num_samples = 100,
+			sample_size = 20;
+
+		char samps[num_samples][sample_size];
+		str_dict *d = new_dict(20);
+
+		for (int i = 0; i < num_samples; i++) {
+			char *s = samps[i];
+			for (int k = 0; k < sample_size; k++) {
+				s[k] = rand() % 256;
+			}
+
+			d = add_str(d, s, sample_size, (void*)(intptr_t)i);
+		}
+
+		assert(d->cap >= (unsigned)num_samples);
+		d = pack_dict(d);
+		assert(d->cap == (unsigned)num_samples);
+
+		for (int i = 0; i < num_samples; i++) {
+			const void *p = query_str_dict(d, samps[i], sample_size);
+			assert((intptr_t)p == i);
+		}
+	}
 
 end_test
